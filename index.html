@@ -1,638 +1,120 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thiệp Mời Tân Gia</title>
-    <!-- Tích hợp Google Fonts sang trọng -->
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Great+Vibes&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --primary: #9c6644;       /* Nâu đồng ấm áp */
-            --primary-dark: #7f5539;
-            --bg-cream: #fdfaf6;      /* Kem nền sang trọng */
-            --bg-card: #ffffff;
-            --gold: #d4a373;          /* Vàng champagne */
-            --text-main: #4a403a;
-            --text-light: #7c6f66;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: #efeae4;
-            color: var(--text-main);
-            overflow-x: hidden;
-        }
-
-/* Bìa thiệp */
-        .cover-screen {
-            position: fixed;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 480px;
-            height: 100vh;
-            background: radial-gradient(circle at center, #fffcf9 0%, #f3e5d8 100%);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 30px;
-            text-align: center;
-            transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease;
-            border: 12px solid #fff;
-            box-shadow: inset 0 0 0 1px var(--gold);
-        }
-
-        .cover-screen.opened {
-            transform: translate(-50%, -100%);
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .cover-subtitle { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: var(--primary); margin-bottom: 10px; }
-        .cover-title { font-family: 'Great Vibes', cursive; font-size: 56px; color: var(--primary-dark); font-weight: normal; margin: 10px 0 20px; }
-        .guest-box { border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); padding: 15px 30px; margin: 15px 0 30px; width: 85%; }
-        .guest-name { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; color: var(--primary-dark); margin-top: 5px; }
-
-        .btn-open {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: #fff;
-            border: none;
-            padding: 14px 36px;
-            border-radius: 30px;
-            font-size: 15px;
-            font-weight: 500;
-            letter-spacing: 1px;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(156, 102, 68, 0.35);
-            animation: pulseBtn 2s infinite;
-        }
-
-        @keyframes pulseBtn {
-            0% { box-shadow: 0 0 0 0 rgba(156, 102, 68, 0.5); }
-            70% { box-shadow: 0 0 0 12px rgba(156, 102, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(156, 102, 68, 0); }
-        }
-
-        /* Nội dung chính */
-        .main-content { padding-bottom: 50px; }
-        .section { padding: 40px 25px; text-align: center; position: relative; }
-        .section-divider { color: var(--gold); font-size: 18px; margin: 10px 0 20px; letter-spacing: 8px; }
-        h2.script-heading { font-family: 'Great Vibes', cursive; font-size: 44px; color: var(--primary-dark); font-weight: normal; }
-        h3.serif-heading { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--primary-dark); margin-bottom: 10px; }
-        p.body-text { font-size: 14.5px; line-height: 1.7; color: var(--text-light); }
-
-        .info-card { background: var(--bg-card); border: 1px solid #eadfd5; border-radius: 16px; padding: 30px 20px; margin-top: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.03); }
-        .time-highlight { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 700; color: var(--primary); margin: 12px 0; }
-
-        .countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
-        .time-item { background: #fff; border: 1px solid var(--gold); border-radius: 12px; padding: 12px 5px; }
-        .time-item span { display: block; font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 700; color: var(--primary-dark); }
-        .time-item small { font-size: 11px; text-transform: uppercase; color: var(--text-light); }
-
-        .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 20px; }
-        .gallery-item { width: 100%; height: 160px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
-        .gallery-item.large { grid-column: span 2; height: 220px; }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
-        .gallery-item:hover img { transform: scale(1.08); }
-
-        .rsvp-form { background: #fff; padding: 25px 20px; border-radius: 16px; border: 1px solid #eadfd5; margin-top: 20px; text-align: left; }
-        .form-control { width: 100%; padding: 12px 15px; margin-bottom: 14px; border: 1px solid #dfd3c8; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: #fdfbf9; }
-        .form-control:focus { outline: none; border-color: var(--primary); background-color: #fff; }
-
-        .btn-primary { width: 100%; background: var(--primary); color: #fff; border: none; padding: 13px; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.3s; }
-        .btn-primary:hover { background: var(--primary-dark); }
-        .btn-outline { display: inline-block; border: 1px solid var(--primary); color: var(--primary); text-decoration: none; padding: 10px 22px; border-radius: 25px; font-size: 13px; font-weight: 500; margin: 10px 5px 0; transition: all 0.3s; cursor: pointer; background: transparent; }
-        .btn-outline:hover { background: var(--primary); color: #fff; }
-
-        /* --- KHU VỰC DÀNH CHO GIA CHỦ --- */
-        .host-panel {
-            background: #f5ede6;
-            border-top: 2px dashed var(--gold);
-            padding: 35px 20px;
-            text-align: left;
-            display: none; /* Ẩn mặc định với khách mời */
-        }
-        .host-panel.show { display: block; }
-        .guest-link-card {
-            background: #fff;
-            border: 1px solid #e2d5c8;
-            border-radius: 10px;
-            padding: 12px 15px;
-            margin-top: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-        }
-        .guest-link-info { overflow: hidden; }
-        .guest-link-name { font-weight: 600; font-size: 14px; color: var(--primary-dark); }
-        .guest-link-url { font-size: 11px; color: var(--text-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px; }
-        .btn-copy-sm {
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            padding: 7px 14px;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-        .btn-copy-sm.copied { background: #2e7d32; }
-
-        /* Hiệu ứng cuộn & Nhạc & Cánh hoa */
-        .reveal { opacity: 0; transform: translateY(35px); transition: all 0.8s ease-out; }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-
-        .music-btn { position: fixed; bottom: 20px; right: 20px; width: 44px; height: 44px; border-radius: 50%; background: var(--primary); color: #fff; border: 2px solid #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.2); cursor: pointer; z-index: 900; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .music-btn.playing { animation: spinMusic 4s linear infinite; }
-        @keyframes spinMusic { 100% { transform: rotate(360deg); } }
-
-        .petal { position: fixed; top: -10px; background-color: #e6ccb2; border-radius: 150% 0 150% 0; opacity: 0.6; pointer-events: none; z-index: 800; animation: fall linear infinite; }
-        @keyframes fall { 0% { transform: translateY(0) rotate(0deg); opacity: 0.7; } 100% { transform: translateY(105vh) rotate(360deg); opacity: 0; } }
-    
-        
-        /* Khung chính giả lập màn hình điện thoại trên máy tính */
-        .app-wrapper {
-            max-width: 480px;
-            margin: 0 auto;
-            background-color: var(--bg-cream);
-            min-height: 100vh;
-            position: relative;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.12);
-            overflow: hidden;
-        }
-
-        /* --- HIỆU ỨNG BÌA THIỆP --- */
-        .cover-screen {
-            position: fixed;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 480px;
-            height: 100vh;
-            background: radial-gradient(circle at center, #fffcf9 0%, #f3e5d8 100%);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 30px;
-            text-align: center;
-            transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease;
-            border: 12px solid #fff;
-            box-shadow: inset 0 0 0 1px var(--gold);
-        }
-
-        .cover-screen.opened {
-            transform: translate(-50%, -100%);
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .cover-subtitle {
-            font-size: 13px;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-
-        .cover-title {
-            font-family: 'Great Vibes', cursive;
-            font-size: 56px;
-            color: var(--primary-dark);
-            font-weight: normal;
-            margin: 10px 0 20px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
-        }
-
-        .guest-box {
-            border-top: 1px solid var(--gold);
-            border-bottom: 1px solid var(--gold);
-            padding: 15px 30px;
-            margin: 15px 0 30px;
-            width: 85%;
-        }
-
-        .guest-name {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--primary-dark);
-            margin-top: 5px;
-        }
-
-        /* Nút bấm hiệu ứng nhịp đập nhẹ */
-        .btn-open {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: #fff;
-            border: none;
-            padding: 14px 36px;
-            border-radius: 30px;
-            font-size: 15px;
-            font-weight: 500;
-            letter-spacing: 1px;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(156, 102, 68, 0.35);
-            animation: pulseBtn 2s infinite;
-            transition: transform 0.2s;
-        }
-
-        .btn-open:hover { transform: scale(1.05); }
-
-        @keyframes pulseBtn {
-            0% { box-shadow: 0 0 0 0 rgba(156, 102, 68, 0.5); }
-            70% { box-shadow: 0 0 0 12px rgba(156, 102, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(156, 102, 68, 0); }
-        }
-
-        /* --- NỘI DUNG CHÍNH --- */
-        .main-content {
-            padding-bottom: 50px;
-        }
-
-        .section {
-            padding: 45px 25px;
-            text-align: center;
-            position: relative;
-        }
-
-        .section-divider {
-            color: var(--gold);
-            font-size: 18px;
-            margin: 10px 0 20px;
-            letter-spacing: 8px;
-        }
-
-        h2.script-heading {
-            font-family: 'Great Vibes', cursive;
-            font-size: 44px;
-            color: var(--primary-dark);
-            font-weight: normal;
-        }
-
-        h3.serif-heading {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 28px;
-            color: var(--primary-dark);
-            margin-bottom: 10px;
-        }
-
-        p.body-text {
-            font-size: 14.5px;
-            line-height: 1.7;
-            color: var(--text-light);
-        }
-
-        /* Thẻ thông tin tiệc */
-        .info-card {
-            background: var(--bg-card);
-            border: 1px solid #eadfd5;
-            border-radius: 16px;
-            padding: 30px 20px;
-            margin-top: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.03);
-        }
-
-        .time-highlight {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-            margin: 12px 0;
-        }
-
-        /* Đồng hồ đếm ngược */
-        .countdown-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .time-item {
-            background: #fff;
-            border: 1px solid var(--gold);
-            border-radius: 12px;
-            padding: 12px 5px;
-        }
-
-        .time-item span {
-            display: block;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 26px;
-            font-weight: 700;
-            color: var(--primary-dark);
-        }
-
-        .time-item small {
-            font-size: 11px;
-            text-transform: uppercase;
-            color: var(--text-light);
-        }
-
-        /* Album ảnh */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .gallery-item {
-            width: 100%;
-            height: 160px;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-        }
-
-        .gallery-item.large {
-            grid-column: span 2;
-            height: 220px;
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s ease;
-        }
-
-        .gallery-item:hover img {
-            transform: scale(1.08);
-        }
-
-        /* Form xác nhận */
-        .rsvp-form {
-            background: #fff;
-            padding: 25px 20px;
-            border-radius: 16px;
-            border: 1px solid #eadfd5;
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            margin-bottom: 14px;
-            border: 1px solid #dfd3c8;
-            border-radius: 8px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 14px;
-            background-color: #fdfbf9;
-            transition: border-color 0.3s;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-            background-color: #fff;
-        }
-
-        .btn-primary {
-            width: 100%;
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            padding: 13px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .btn-primary:hover { background: var(--primary-dark); }
-
-        .btn-outline {
-            display: inline-block;
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            text-decoration: none;
-            padding: 10px 22px;
-            border-radius: 25px;
-            font-size: 13px;
-            font-weight: 500;
-            margin: 10px 5px 0;
-            transition: all 0.3s;
-        }
-
-        .btn-outline:hover {
-            background: var(--primary);
-            color: #fff;
-        }
-
-        /* --- HIỆU ỨNG CUỘN TRANG (SCROLL REVEAL) --- */
-        .reveal {
-            opacity: 0;
-            transform: translateY(35px);
-            transition: all 0.8s ease-out;
-        }
-
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* --- NÚT NHẠC NỀN --- */
-        .music-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: #fff;
-            border: 2px solid #fff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            cursor: pointer;
-            z-index: 900;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        .music-btn.playing {
-            animation: spinMusic 4s linear infinite;
-        }
-
-        @keyframes spinMusic {
-            100% { transform: rotate(360deg); }
-        }
-
-        /* --- HIỆU ỨNG CÁNH HOA RƠI --- */
-        .petal {
-            position: fixed;
-            top: -10px;
-            background-color: #e6ccb2;
-            border-radius: 150% 0 150% 0;
-opacity: 0.6;
-pointer-events: none;
-z-index: 800;
-animation: fall linear infinite;
-}
-@keyframes fall {
-0% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
-100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
-}
-
-
-Thiệp Mời
-Mừng Tân Gia
-
-Trân trọng kính mời
-Quý khách
-
-Mở thiệp
-Tân Gia
-Mừng nhà mới · Mừng đoàn viên
-✦ ✦ ✦
-
-Gia đình trân trọng kính mời Quý khách đến chung vui tiệc tân gia và tham quan tổ ấm mới.
-Hẹn gặp tại nhà mới
-✦
-Vào lúc 11:00 Trưa — Chủ Nhật, 20.12.2026
-20 . 12 . 2026
-Địa chỉ: Số 123 Đường Hoa Hồng, Quận Phú Nhuận, TP.HCM
-
-📍 Chỉ đường
-📅 Lưu vào lịch
-
-Đếm ngược ngày vui
-
-00Ngày
-00Giờ
-00Phút
-00Giây
-Album Tổ ấm
-
-
-
-
-Xác nhận tham dự
-
-
-
-Tôi sẽ tham dự
-Rất tiếc, tôi vắng mặt
-
-
-
-Gửi xác nhận
-🎵
-const params = new URLSearchParams(window.location.search);
-const guest = params.get('ten');
-if (guest) {
-document.getElementById('guestNameCover').innerText = guest;
-document.getElementById('guestNameBody').innerText = guest;
-document.getElementById('rsvpName').value = guest;
-}
-const bgMusic = document.getElementById('bgMusic');
-const musicBtn = document.getElementById('musicBtn');
-let isPlaying = false;
-function openInvitation() {
-document.getElementById('coverScreen').classList.add('opened');
-bgMusic.play().then(() => { isPlaying = true; musicBtn.List.add('playing'); }).catch(() => {});
-checkReveal();
-startPetals();
-}
-function toggleMusic() {
-isPlaying ? bgMusic.pause() : bgMusic.play();
-musicBtn.classList.toggle('playing', !isPlaying);
-isPlaying = !isPlaying;
-}
-function checkReveal() {
-document.querySelectorAll('.reveal').forEach(el => {
-if (el.getBoundingClientRect().top < window.innerHeight - 60) el.classList.add('active');
-});
-}
-window.addEventListener('scroll', checkReveal);
-function startPetals() {
-const wrapper = document.querySelector('.app-wrapper');
-setInterval(() => {
-const petal = document.createElement('div');
-petal.classList.add('petal');
-const size = Math.random() * 10 + 8 + 'px';
-petal.style.width = size; petal.style.height = size;
-petal.style.left = Math.random() * 100 + '%';
-petal.style.animationDuration = Math.random() * 4 + 4 + 's';
-wrapper.appendChild(petal);
-setTimeout(() => petal.remove(), 8000);
-}, 700);
-}
-const eventTime = new Date("2026-12-20T11:00:00").getTime();
-setInterval(() => {
-const diff = eventTime - Date.now();
-if (diff > 0) {
-document.getElementById('days').innerText = String(Math.floor(diff / 86400000)).padStart(2, '0');
-document.getElementById('hours').innerText = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
-document.getElementById('minutes').innerText = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
-document.getElementById('seconds').innerText = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
-}
-}, 1000);
-
-<form class="rsvp-form" onsubmit="handleRSVP(event)">
-    <input type="text" id="rsvpName" class="form-control" placeholder="Tên của bạn" required>
-    <select id="rsvpStatus" class="form-control">
-        <option value="Sẽ tham dự">Tôi sẽ tham dự</option>
-        <option value="Không thể tham dự">Rất tiếc, tôi vắng mặt</option>
-    </select>
-    <input type="number" id="rsvpCount" class="form-control" min="1" max="10" value="1" placeholder="Số người đi cùng">
-    <textarea id="rsvpWish" class="form-control" rows="3" maxlength="500" placeholder="Lời chúc gửi gia chủ"></textarea>
-    <button type="submit" id="submitBtn" class="btn-primary">Gửi xác nhận</button>
-</form>
-    
-// DÁN LINK WEB APP URL CỦA BẠN VÀO DƯỚI ĐÂY
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydSRf0VlHVsfruUS7IHMghn6_2ht7Cp8Tm1BdBYzqKxOKQrDp5rzYNHT9ThBIUtXO-/exec";
-
-function handleRSVP(e) {
-    e.preventDefault();
-    
-    const btn = document.getElementById('submitBtn');
-    const originalText = btn.innerText;
-    btn.innerText = "Đang gửi lời chúc...";
-    btn.disabled = true;
-
-    const payload = {
-        name: document.getElementById('rsvpName').value,
-        status: document.getElementById('rsvpStatus').value,
-        count: document.getElementById('rsvpCount').value,
-        wish: document.getElementById('rsvpWish').value
-    };
-
-    fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors', // Bỏ qua lỗi CORS của trình duyệt khi gọi Google Script
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-    })
-    .then(() => {
-        alert('Cảm ơn ' + payload.name + ' đã gửi xác nhận và lời chúc đến gia đình!');
-        e.target.reset();
-    })
-    .catch((error) => {
-        console.error('Lỗi:', error);
-        alert('Có lỗi xảy ra khi gửi, bạn vui lòng thử lại nhé!');
-    })
-    .finally(() => {
-        btn.innerText = originalText;
-        btn.disabled = false;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f1e9">
+  <meta name="description" content="Trân trọng kính mời quý khách đến chung vui tiệc tân gia cùng gia đình.">
+  <title>Thiệp Mời Tân Gia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Great+Vibes&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--brown:#8d5b3d;--dark:#68432f;--gold:#cda875;--cream:#fbf7f1;--muted:#786b61;--line:#eadccf}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#eee7df;color:#493d35;font-family:Montserrat, sans-serif;overflow-x:hidden}
+    .page{max-width:520px;min-height:100vh;margin:auto;background:var(--cream);box-shadow:0 8px 38px #00000012;overflow:hidden}
+    .cover{position:fixed;z-index:5;inset:0 0 0 50%;transform:translateX(-50%);width:min(100%,520px);height:100dvh;padding:28px;border:10px solid #fff;background:radial-gradient(circle,#fffdf9,#f0dfce);box-shadow:inset 0 0 0 1px var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transition:transform .85s ease,opacity .75s ease}
+    .cover.opened{transform:translate(-50%,-105%);opacity:0;pointer-events:none}.eyebrow{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--brown)}
+    .script{font:normal 58px 'Great Vibes',cursive;color:var(--dark);margin:14px 0}.guest-box{width:min(100%,340px);padding:18px 10px;margin:12px 0 28px;border-top:1px solid var(--gold);border-bottom:1px solid var(--gold)}
+    .guest-name{font:700 28px 'Cormorant Garamond',serif;color:var(--dark);overflow-wrap:anywhere}.btn{border:0;border-radius:30px;padding:13px 26px;background:linear-gradient(135deg,var(--brown),var(--dark));color:#fff;font:500 14px Montserrat;cursor:pointer;box-shadow:0 5px 16px #8d5b3d33}.btn:disabled{opacity:.6;cursor:wait}
+    .hero{padding:58px 25px 35px;text-align:center}.section{padding:34px 24px;text-align:center}.script-title{font:normal 48px 'Great Vibes',cursive;color:var(--dark);margin:0 0 8px}.divider{color:var(--gold);letter-spacing:8px;margin:18px 0}.body{font-size:14px;line-height:1.9;color:var(--muted)}
+    .card{margin:20px 0 0;padding:26px 18px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 24px #493d3508}.date{font:700 26px 'Cormorant Garamond',serif;color:var(--brown);margin:12px 0}.time{font:600 21px 'Cormorant Garamond',serif;color:var(--dark)}
+    .countdown{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:20px}.unit{padding:12px 3px;border:1px solid var(--gold);border-radius:12px;background:#fff}.unit strong{display:block;font:700 25px 'Cormorant Garamond',serif;color:var(--dark)}.unit small{font-size:9px;letter-spacing:.5px;color:var(--muted);text-transform:uppercase}
+    .actions{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:18px}.outline{display:inline-block;padding:10px 16px;border:1px solid var(--brown);border-radius:24px;color:var(--brown);text-decoration:none;font-size:12px}
+    .form{text-align:left}.field{display:block;width:100%;margin:0 0 13px;padding:13px 14px;border:1px solid #dfd2c6;border-radius:9px;background:#fdfbf8;font:14px Montserrat;color:#493d35}.field:focus{outline:2px solid #cda87566;border-color:var(--brown)}label{display:block;font-size:12px;color:var(--muted);margin:0 0 7px}.form .btn{width:100%;border-radius:9px}.message{min-height:22px;margin:12px 0 0;font-size:12px;line-height:1.6;color:var(--brown)}
+    footer{padding:28px 20px 40px;text-align:center;color:#998a7e;font-size:11px}.reveal{opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s ease}.reveal.visible{opacity:1;transform:none}
+    @media(max-width:360px){.script{font-size:48px}.section{padding-inline:18px}.countdown{gap:5px}.unit strong{font-size:22px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+  </style>
+</head>
+<body>
+  <div class="cover" id="cover" aria-label="Bìa thiệp mời">
+    <span class="eyebrow">Trân trọng kính mời</span>
+    <h1 class="script">Mừng Tân Gia</h1>
+    <div class="guest-box"><div style="font-size:12px;color:var(--muted)">Thân mời</div><div class="guest-name" id="guestCover">Quý khách</div></div>
+    <button class="btn" id="openBtn" type="button">Mở thiệp</button>
+  </div>
+  <main class="page">
+    <section class="hero reveal">
+      <p class="eyebrow">Mừng nhà mới · Mừng đoàn viên</p>
+      <h2 class="script-title">Tân Gia</h2><div class="divider">✦ ✦ ✦</div>
+      <p class="body">Gia đình chúng tôi trân trọng kính mời <strong id="guestBody" style="color:var(--dark)">Quý khách</strong> đến chung vui buổi tiệc tân gia, chia sẻ niềm vui về nhà mới cùng gia đình.</p>
+    </section>
+    <section class="section reveal">
+      <h2 class="script-title">Hẹn gặp tại nhà mới</h2>
+      <div class="card">
+        <div class="eyebrow">Thời gian tổ chức</div><div class="time">11:00 Trưa · Chủ Nhật</div><div class="date">20 · 12 · 2026</div>
+        <p class="body">Địa chỉ: Số 123 Đường Hoa Hồng, Quận Phú Nhuận, TP. Hồ Chí Minh</p>
+        <div class="actions"><a class="outline" id="mapLink" target="_blank" rel="noopener">📍 Chỉ đường</a><a class="outline" id="calendarLink" download="thiep-moi-tan-gia.ics">📅 Lưu vào lịch</a></div>
+      </div>
+    </section>
+    <section class="section reveal">
+      <h2 class="script-title">Đếm ngược ngày vui</h2>
+      <div class="countdown" aria-live="off">
+        <div class="unit"><strong id="days">00</strong><small>Ngày</small></div><div class="unit"><strong id="hours">00</strong><small>Giờ</small></div><div class="unit"><strong id="minutes">00</strong><small>Phút</small></div><div class="unit"><strong id="seconds">00</strong><small>Giây</small></div>
+      </div>
+    </section>
+    <section class="section reveal">
+      <h2 class="script-title">Xác nhận tham dự</h2><p class="body">Xin vui lòng phản hồi để gia đình chuẩn bị đón tiếp chu đáo.</p>
+      <form class="card form" id="rsvpForm">
+        <label for="rsvpName">Họ và tên</label><input class="field" id="rsvpName" name="name" maxlength="120" autocomplete="name" required placeholder="Nhập họ tên của bạn">
+        <label for="rsvpStatus">Xác nhận tham dự</label><select class="field" id="rsvpStatus" name="status"><option value="Sẽ tham dự">Tôi sẽ tham dự</option><option value="Không thể tham dự">Rất tiếc, tôi vắng mặt</option></select>
+        <label for="rsvpCount">Số người tham dự (bao gồm bạn)</label><input class="field" id="rsvpCount" name="count" type="number" min="1" max="10" value="1" required>
+        <label for="rsvpWish">Lời chúc gửi gia chủ (không bắt buộc)</label><textarea class="field" id="rsvpWish" name="wish" rows="3" maxlength="500" placeholder="Gửi lời chúc đến gia đình..."></textarea>
+        <button class="btn" id="submitBtn" type="submit">Gửi xác nhận</button><p class="message" id="formMessage" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+    <footer>Rất hân hạnh được đón tiếp quý khách ❤️</footer>
+  </main>
+  <script>
+    // Dán URL triển khai Web App Google Apps Script tại đây.
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbydSRf0VlHVsfruUS7IHMghn6_2ht7Cp8Tm1BdBYzqKxOKQrDp5rzYNHT9ThBIUtXO-/exec';
+    const EVENT_DATE = '2026-12-20T11:00:00+07:00';
+    const EVENT_ADDRESS = 'Số 123 Đường Hoa Hồng, Quận Phú Nhuận, TP. Hồ Chí Minh';
+    const $ = id => document.getElementById(id);
+
+    // Tên khách được truyền qua URL: ?ten=Nguyen%20Van%20A
+    const params = new URLSearchParams(location.search);
+    const guest = (params.get('ten') || '').trim().slice(0, 120);
+    if (guest) { $('guestCover').textContent = guest; $('guestBody').textContent = guest; $('rsvpName').value = guest; }
+
+    $('mapLink').href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(EVENT_ADDRESS);
+    const start = new Date(EVENT_DATE);
+    const pad = n => String(n).padStart(2, '0');
+    const icsDate = d => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+    const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
+    const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Thiep Moi Tan Gia//VI','BEGIN:VEVENT','DTSTART:' + icsDate(start),'DTEND:' + icsDate(end),'SUMMARY:Tiệc mừng Tân Gia','LOCATION:' + EVENT_ADDRESS.replace(/,/g, '\\,'),'DESCRIPTION:Trân trọng kính mời quý khách đến chung vui cùng gia đình.','END:VEVENT','END:VCALENDAR'].join('\r\n');
+    $('calendarLink').href = URL.createObjectURL(new Blob([ics], {type:'text/calendar;charset=utf-8'}));
+
+    function updateCountdown() {
+      let diff = Math.max(0, start.getTime() - Date.now());
+      const values = [Math.floor(diff / 86400000), Math.floor(diff % 86400000 / 3600000), Math.floor(diff % 3600000 / 60000), Math.floor(diff % 60000 / 1000)];
+      ['days','hours','minutes','seconds'].forEach((id, i) => $(id).textContent = pad(values[i]));
+    }
+    updateCountdown(); setInterval(updateCountdown, 1000);
+
+    $('openBtn').addEventListener('click', () => { $('cover').classList.add('opened'); document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible')); });
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } }), {threshold: .12});
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    } else document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+
+    $('rsvpForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const btn = $('submitBtn'), message = $('formMessage');
+      if (!SCRIPT_URL || SCRIPT_URL.includes('DAN_URL')) { message.textContent = 'Gia chủ cần cấu hình URL Google Apps Script trước khi nhận xác nhận.'; return; }
+      const data = {name:$('rsvpName').value.trim(), status:$('rsvpStatus').value, count:$('rsvpCount').value, wish:$('rsvpWish').value.trim()};
+      if (!data.name || !Number.isInteger(Number(data.count)) || Number(data.count) < 1 || Number(data.count) > 10) { message.textContent = 'Vui lòng kiểm tra họ tên và số người tham dự (1–10).'; return; }
+      btn.disabled = true; btn.textContent = 'Đang gửi...'; message.textContent = '';
+      try {
+        // no-cors trả về opaque response; trình duyệt không thể xác minh dữ liệu đã ghi vào Sheet.
+        await fetch(SCRIPT_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(data)});
+        message.textContent = 'Đã gửi yêu cầu xác nhận. Cảm ơn ' + data.name + '! Gia chủ vui lòng kiểm tra Google Sheets để xác nhận dữ liệu đã được ghi nhận.';
+        $('rsvpWish').value = '';
+      } catch (error) {
+        console.error(error); message.textContent = 'Không gửi được yêu cầu. Vui lòng kiểm tra kết nối và thử lại.';
+      } finally { btn.disabled = false; btn.textContent = 'Gửi xác nhận'; }
     });
-}
-
+  </script>
+</body>
+</html>
