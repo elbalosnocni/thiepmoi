@@ -1,0 +1,3 @@
+EventID,Type,Title,Host,Subtitle,EventDate,EndDate,Address,MapURL,Message,Theme,Active,CreatedAt
+TAN-GIA-20261220,housewarming,Mừng Tân Gia,Gia đình,Tân Gia,2026-12-20T11:00:00+07:00,2026-12-20T13:00:00+07:00,"Số 123 Đường Hoa Hồng, Quận Phú Nhuận, TP.HCM",,"Gia đình trân trọng kính mời Quý khách đến chung vui tiệc tân gia và tham quan tổ ấm mới.",classic,TRUE,
+CUOI-ANH-LAN-2027,wedding,Lễ Thành Hôn,Nguyễn Văn Anh & Trần Ngọc Lan,Trân trọng kính mời,2027-03-20T17:30:00+07:00,2027-03-20T21:00:00+07:00,"Nhà hàng..., TP.HCM",,"Sự hiện diện của bạn là niềm vui và vinh dự của gia đình.",wedding,FALSE,
